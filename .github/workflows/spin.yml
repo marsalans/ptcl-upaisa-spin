@@ -11,7 +11,7 @@ on:
       spin_count:
         description: "Number of spins"
         required: false
-        default: "3"
+        default: "1"
 
 jobs:
   spin:
@@ -44,7 +44,7 @@ jobs:
       - name: Run spin automation
         env:
           PTCL_NUMBER: ${{ secrets.PTCL_NUMBER }}
-          SPIN_COUNT:  ${{ github.event.inputs.spin_count || '3' }}
+          SPIN_COUNT:  ${{ github.event.inputs.spin_count || '1' }}
           HEADLESS:    "true"
           SPIN_DELAY:  "5"
         run: python ptcl_spin_automation.py
