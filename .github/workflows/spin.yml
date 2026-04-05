@@ -11,12 +11,14 @@ on:
       spin_count:
         description: "Number of spins"
         required: false
-        default: "1"
+        default: "3"
 
 jobs:
   spin:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       # ── 1. Checkout repo ──────────────────────────────────────────
@@ -42,14 +44,14 @@ jobs:
       - name: Run spin automation
         env:
           PTCL_NUMBER: ${{ secrets.PTCL_NUMBER }}
-          SPIN_COUNT:  ${{ github.event.inputs.spin_count || '1' }}
+          SPIN_COUNT:  ${{ github.event.inputs.spin_count || '3' }}
           HEADLESS:    "true"
           SPIN_DELAY:  "5"
         run: python ptcl_spin_automation.py
 
       # ── 6. Upload screenshots + CSV as artifacts ──────────────────
       - name: Upload screenshots
-        if: always()   # upload even if the script fails
+        if: always()
         uses: actions/upload-artifact@v4.6.2
         with:
           name: spin-screenshots-${{ github.run_number }}
@@ -58,7 +60,7 @@ jobs:
 
       - name: Upload results CSV
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: spin-results-${{ github.run_number }}
           path: spin_results.csv
